@@ -5,5 +5,5 @@ use_frameworks!
 
 target 'SnowplowSwiftDemo' do
     platform :ios, '10.0'
-    pod 'SnowplowTracker', '~> 1.3'
+    pod 'AgillicSDK', :git => 'https://github.com/Agillic/agillic-ios-sdk.git'
 end
