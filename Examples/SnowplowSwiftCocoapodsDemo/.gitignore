@@ -24,7 +24,7 @@ DerivedData
 .DS_Store
 
 # Cocoapods
-# Pods/
+Pods/
 
 # Documentation
 /docs/html/
