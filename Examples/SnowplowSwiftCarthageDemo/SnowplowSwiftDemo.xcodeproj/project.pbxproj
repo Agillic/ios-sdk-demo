@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		75699CBB200FB29C00FFC20D /* SnowplowSwiftDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75699CBA200FB29C00FFC20D /* SnowplowSwiftDemoTests.swift */; };
 		75699CC6200FB29C00FFC20D /* SnowplowSwiftDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75699CC5200FB29C00FFC20D /* SnowplowSwiftDemoUITests.swift */; };
+		9558D1F624A60F5A00791FA6 /* AgillicSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */; };
+		9558D1F724A60F5A00791FA6 /* AgillicSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B3D9BDE0237AC0E3009B310A /* SnowplowSwiftDemoWatch WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B3D9BDDF237AC0E3009B310A /* SnowplowSwiftDemoWatch WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3D9BDE6237AC0E3009B310A /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3D9BDE4237AC0E3009B310A /* Interface.storyboard */; };
 		B3D9BDE8237AC0E5009B310A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3D9BDE7237AC0E5009B310A /* Assets.xcassets */; };
@@ -63,6 +65,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		9558D1ED24A60DE300791FA6 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9558D1F724A60F5A00791FA6 /* AgillicSDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3D9BDFC237AC0E6009B310A /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -99,6 +112,7 @@
 		75F9C5F421FC004100A5B8FC /* SnowplowTracker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnowplowTracker.framework; path = Carthage/Build/iOS/SnowplowTracker.framework; sourceTree = "<group>"; };
 		75F9C5F521FC004100A5B8FC /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = Carthage/Build/iOS/Reachability.framework; sourceTree = "<group>"; };
 		75F9C5F621FC004100A5B8FC /* FMDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FMDB.framework; path = Carthage/Build/iOS/FMDB.framework; sourceTree = "<group>"; };
+		9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AgillicSDK.framework; path = Carthage/Build/iOS/AgillicSDK.framework; sourceTree = "<group>"; };
 		B3D9BDDC237AC0E3009B310A /* SnowplowSwiftDemoWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SnowplowSwiftDemoWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D9BDDF237AC0E3009B310A /* SnowplowSwiftDemoWatch WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SnowplowSwiftDemoWatch WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D9BDE5237AC0E3009B310A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -129,6 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9558D1F624A60F5A00791FA6 /* AgillicSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +239,7 @@
 		75F9C5F321FC004100A5B8FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */,
 				75F9C5F621FC004100A5B8FC /* FMDB.framework */,
 				B3D9BE09237AC50F009B310A /* FMDB.framework */,
 				75F9C5F521FC004100A5B8FC /* Reachability.framework */,
@@ -265,6 +281,7 @@
 				75699C9C200FB29C00FFC20D /* Frameworks */,
 				75699C9D200FB29C00FFC20D /* Resources */,
 				75866F87222C86740039A3E1 /* Run Script - Copy Frameworks (Carthage) */,
+				9558D1ED24A60DE300791FA6 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -794,6 +811,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SnowplowSwiftDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -814,6 +835,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SnowplowSwiftDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -833,6 +858,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SnowplowSwiftDemoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -852,6 +881,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = SnowplowSwiftDemoUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -950,6 +983,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "SnowplowSwiftDemoWatch WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -980,6 +1014,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "SnowplowSwiftDemoWatch WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
