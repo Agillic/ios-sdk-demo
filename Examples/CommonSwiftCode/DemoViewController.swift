@@ -44,15 +44,10 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
         }
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.parentPageViewController.uri = uriField.text!
-        return textField.resignFirstResponder()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.uriField.delegate = self
-        self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
+        //self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
         // Do any additional setup after loading the view, typically from a nib.
         uriField.text = UserDefaults.standard.string(forKey: keyUriField) ?? ""
     }
@@ -63,7 +58,7 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
     }
 
     @IBAction func inputUri(_ sender: UITextField) {
-        self.parentPageViewController.uri = uriField.text!
+        //self.parentPageViewController.userId = uriField.text!
     }
     
     @IBAction func toggleMethod(_ sender: UISegmentedControl) {

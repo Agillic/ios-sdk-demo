@@ -11,31 +11,42 @@ import SnowplowTracker
 import AgillicSDK
 
 
-class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
-
+class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIPickerViewDelegate {
     var tracker : AgillicTracker?
     var madeCounter : Int = 0
     var sentCounter : Int = 0
-    var uri : String = ""
     var methodType : SPRequestOptions = .post
     var protocolType : SPProtocol = .https
     var token : String = ""
     @objc dynamic var snowplowId: String! = "iOS/page view"
 
-    let kAppId     = "DemoAppId"
+    let kAppId     = "com.agillic.sdk.demo"
     let kNamespace = "DemoAppNamespace"
     let userId = "dennis.schafroth@agillic.com"
     // Passed down in/after login;
-    let solutionId : String = "15arnn5"
-    let key = "F6xRABtMVG9h"
-    let secret = "yOdwUJlBB6g9kZoi"
+    class SolutionInfo {
+        var solutionId : String
+        var key : String
+        var secret : String
+        init(_ id : String, key: String, secret: String) {
+            self.solutionId = id;
+            self.key = key;
+            self.secret = secret;
+        }
+    }
+    var truncintProd = SolutionInfo("15arnn5", key: "F6xRABtMVG9h", secret: "yOdwUJlBB6g9kZoi")
+    var keys : [String: SolutionInfo] = [ 
+        "agi-trunc-prod" : SolutionInfo("15arnn5", key: "F6xRABtMVG9h", secret: "yOdwUJlBB6g9kZoi"),
+        "agi-trunc-stag" : SolutionInfo("16k01cn", key: "VIP4hwIKU1GZ", secret: "gUItpLA0U0PGsvYZ"),
+        "agi-truncint-stag" : SolutionInfo("qrcqkw", key: "Z6SOrRon1TCe", secret: "q5i4R1GTVBpqvIYW"),
+        "agi-tryit1-stag": SolutionInfo("o9257h", key : "?", secret: "?"),
+        "agi-tryit8-stag": SolutionInfo("195b1q", key: "?", secret: "?")
+    ]
+
+    let selectedSolution = "agi-truncint-stag";
 
     func updateToken(_ newToken: String) {
         token = newToken
-    }
-
-    func getCollectorUrl() -> String {
-        return self.uri
     }
 
     func getMethodType() -> SPRequestOptions {
@@ -48,10 +59,13 @@ class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, U
     
     func setup(login : String?) {
         let agillicSDK = MobileSDK()
-        agillicSDK.setTestAPI();
+        let solutionInfo = keys[selectedSolution]
+        let solutionId = solutionInfo!.solutionId
+        let key : String = solutionInfo!.key
+        let secret = solutionInfo!.secret
         agillicSDK.setAuth(BasicAuth(user: key, password: secret))
-        tracker = agillicSDK.register(clientAppId: kAppId, clientAppVersion: "1.0", solutionId: solutionId, userID: login != nil ? login! : self.userId , pushNotificationToken: nil)
-        
+        tracker = agillicSDK.register(clientAppId: kAppId, clientAppVersion: "1.0", solutionId: solutionId, userID: login != nil ? login! : self.userId , pushNotificationToken: token)
+        //Toast.show(message: "Registered device for " + login!, controller: self);
     }
 
     func newVc(viewController: String) -> UIViewController {
@@ -142,5 +156,14 @@ class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, U
         // Pass the selected object to the new view controller.
     }
     */
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return keys.count
+    }
+    
+
 
 }
