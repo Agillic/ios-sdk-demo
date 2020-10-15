@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   AgillicSDK:
-    :commit: 0cb021443f87b351b290e6e788767d46a4ac5ecf
+    :commit: c2b68a6ed6bc5c829532299f12f93e73209eadb5
     :git: https://github.com/Agillic/agillic-ios-sdk.git
 
 SPEC CHECKSUMS:
