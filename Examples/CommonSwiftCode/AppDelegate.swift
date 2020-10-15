@@ -115,8 +115,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         if let rootViewController = window?.rootViewController as? PageViewController {
-            let token = String(format: "%@", deviceToken as CVarArg).trimmingCharacters(in: CharacterSet(charactersIn: "<>")).replacingOccurrences(of: " ", with: "")
-            NSLog("%@", token)
+            let tokenComponents = deviceToken.map { data in String(format: "%02.2hhx", data) }
+            let token = tokenComponents.joined()
+            NSLog("DeviceToken %@", token)
             rootViewController.updateToken(token)
         }
     }
