@@ -79,11 +79,14 @@ class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, U
         agillicSDK.setAuth(BasicAuth(user: key, password: secret))
         tracker = agillicSDK.register(clientAppId: kAppId, clientAppVersion: "1.0", solutionId: solutionId, userID: login != nil ? login! : self.userId , pushNotificationToken: token, completion:
         { (result) in
+            let notificationName = NSNotification.Name(rawValue: "registration");
             switch (result) {
             case .success(let count):
                 print("Successfull: \(count)")
+                NotificationCenter.default.post(Notification(name: notificationName, object: nil, userInfo: ["status" : "Registration was successful" ]))
             case .failure(let error):
                 print("Failed " + error.description)
+                NotificationCenter.default.post(Notification(name: notificationName, object: nil, userInfo: ["status" : "Registration failed!" ]))
             }
         })
         //Toast.show(message: "Registered device for " + login!, controller: self);

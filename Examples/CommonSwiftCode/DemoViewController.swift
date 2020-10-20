@@ -24,6 +24,7 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, U
     @IBOutlet weak var protocolSwitch: UISegmentedControl!
     @IBOutlet weak var methodSwitch: UISegmentedControl!
     @IBOutlet weak var pickerView : UIPickerView!;
+    @IBOutlet weak var statusField : UILabel!;
     weak var tracker : AgillicTracker?
     var uuid : UUID = UUID.init();
 
@@ -45,14 +46,26 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, U
         }
     }
     
+    @objc func updateStatus(_ notification: NSNotification) {
+        if let status = notification.userInfo?["status"] as? String? {
+            DispatchQueue.main.async { [unowned self] in
+                    self.statusField.text = status;
+                Toast.show(message: status!, controller: self);
+                }
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.recipientField.delegate = self
+        let mainQueue = OperationQueue.main
         //self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
         // Do any additional setup after loading the view, typically from a nib.
         recipientField.text = UserDefaults.standard.string(forKey: keyRecipientField) ?? ""
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateStatus(_:)), name: NSNotification.Name(rawValue: "registration"), object: nil)
+        // NotificationCenter.default.addObserver(self, selector: #selector(self.updateStatus(_:)), name: NSNotification.Name(rawValue: "registration"), object: nil)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
