@@ -29,7 +29,7 @@ class DemoUtils {
             builder!.setProperty("DemoProperty")
             builder!.setValue(5)
         })
-        tracker.trackStructuredEvent(event)
+        tracker.track(event)
     }
     
     static func trackUnstructuredEventWithTracker(_ tracker: SPTracker) {
@@ -40,7 +40,7 @@ class DemoUtils {
             builder!.setProperty("DemoProperty")
             builder!.setValue(5)
         })
-        tracker.trackStructuredEvent(event)
+        tracker.track(event)
         
         event = SPStructured.build({ (builder : SPStructuredBuilder?) -> Void in
             builder!.setCategory("DemoCategory")
@@ -48,9 +48,8 @@ class DemoUtils {
             builder!.setLabel("DemoLabel")
             builder!.setProperty("DemoProperty")
             builder!.setValue(5)
-            builder!.setTimestamp(1243567890)
         })
-        tracker.trackStructuredEvent(event)
+        tracker.track(event)
     }
     
     static func trackPageViewWithTracker(_ tracker: SPTracker) {
@@ -60,13 +59,12 @@ class DemoUtils {
         var event = SPUnstructured.build({ (builder : SPUnstructuredBuilder?) -> Void in
             builder!.setEventData(sdj!)
         })
-        tracker.trackUnstructuredEvent(event)
+        tracker.track(event)
         
         event = SPUnstructured.build({ (builder : SPUnstructuredBuilder?) -> Void in
             // builder!.setEventData(sdj)
-            builder!.setTimestamp(1243567890)
         })
-        tracker.trackUnstructuredEvent(event)
+        tracker.track(event)
     }
     
     static func trackScreenViewWithTracker(_ tracker: SPTracker) {
@@ -75,7 +73,7 @@ class DemoUtils {
             builder!.setScreenId(screenId)
             builder!.setName("DemoScreenName")
         })
-        tracker.trackScreenViewEvent(event)
+        tracker.track(event)
     }
     
     static func trackTimingWithCategoryWithTracker(_ tracker: SPTracker) {
@@ -85,7 +83,7 @@ class DemoUtils {
             builder!.setTiming(5)
             builder!.setLabel("DemoTimingLabel")
         })
-        tracker.trackTimingEvent(event)
+        tracker.track(event)
     }
     
     static func trackEcommerceTransactionWithTracker(_ tracker: SPTracker) {
@@ -112,7 +110,7 @@ class DemoUtils {
             builder!.setCurrency("USD")
             builder!.setItems(itemArray)
         })
-        tracker.trackEcommerceEvent(event)
+        tracker.track(event)
         
         event = SPEcommerce.build({ (builder : SPEcommTransactionBuilder?) -> Void in
             builder!.setOrderId(transactionID)
@@ -125,9 +123,8 @@ class DemoUtils {
             builder!.setCountry("USA")
             builder!.setCurrency("USD")
             builder!.setItems(itemArray)
-            builder!.setTimestamp(1243567890)
         })
-        tracker.trackEcommerceEvent(event)
+        tracker.track(event)
     }
 
     static func trackPushNotificationWithTracker(_ tracker: SPTracker) {
@@ -158,6 +155,6 @@ class DemoUtils {
             builder!.setNotification(content)
         })
 
-        tracker.trackPushNotificationEvent(event)
+        tracker.track(event)
     }
 }

@@ -16,13 +16,14 @@ protocol PageObserver: class {
     func getParentPageViewController(parentRef: PageViewController)
 }
 
-class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
-    private let keyUriField = "URL-Endpoint";
+class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, UIPickerViewDelegate, UIPickerViewDataSource {
+    private let keyRecipientField = "recipientEmail";
 
-    @IBOutlet weak var uriField: UITextField!
+    @IBOutlet weak var recipientField: UITextField!
     @IBOutlet weak var trackingSwitch: UISegmentedControl!
     @IBOutlet weak var protocolSwitch: UISegmentedControl!
     @IBOutlet weak var methodSwitch: UISegmentedControl!
+    @IBOutlet weak var pickerView : UIPickerView!;
     weak var tracker : AgillicTracker?
     var uuid : UUID = UUID.init();
 
@@ -46,10 +47,10 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.uriField.delegate = self
+        self.recipientField.delegate = self
         //self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
         // Do any additional setup after loading the view, typically from a nib.
-        uriField.text = UserDefaults.standard.string(forKey: keyUriField) ?? ""
+        recipientField.text = UserDefaults.standard.string(forKey: keyRecipientField) ?? ""
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,7 +59,7 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
     }
 
     @IBAction func inputUri(_ sender: UITextField) {
-        //self.parentPageViewController.userId = uriField.text!
+        //self.parentPageViewController.userId = recipientField.text!
     }
     
     @IBAction func toggleMethod(_ sender: UISegmentedControl) {
@@ -72,10 +73,11 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
     }
     
     @IBAction func loginAndRegister(_ sender: UIButton) {
-        UserDefaults.standard.set(uriField.text ?? "", forKey: keyUriField);
-        let login = self.uriField.text
+        UserDefaults.standard.set(recipientField.text ?? "", forKey: keyRecipientField);
+        let selected = pickerView.selectedRow(inComponent: 0)
+        let login = self.recipientField.text
         DispatchQueue.global(qos: .default).async {
-            self.parentPageViewController.setup(login: login)
+            self.parentPageViewController.setup(login: login, selected: selected)
             
             let event = AppViewEvent(self.uuid.uuidString, screenName: "ios_protocol://iosapp/demo/1")
             self.parentPageViewController.tracker?.track(event)
@@ -86,5 +88,21 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
         let event = AppViewEvent(uuid.uuidString, screenName: "ios_protocol://iosapp/demo/1")
         parentPageViewController.tracker?.track(event)
     }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return parentPageViewController.keys[row].name;
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return parentPageViewController.keys.count
+    }
+    
+
+
+
 
 }
