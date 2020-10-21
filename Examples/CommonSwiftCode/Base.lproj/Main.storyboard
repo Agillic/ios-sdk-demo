@@ -93,6 +93,7 @@
                     <connections>
                         <outlet property="pickerView" destination="15O-vi-UKy" id="wyd-7e-vqT"/>
                         <outlet property="recipientField" destination="Hkc-q6-GKS" id="eVo-kp-etZ"/>
+                        <outlet property="statusField" destination="dRb-tn-cxh" id="t8R-pd-YBJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
