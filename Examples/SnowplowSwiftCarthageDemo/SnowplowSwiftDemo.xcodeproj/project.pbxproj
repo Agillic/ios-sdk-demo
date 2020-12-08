@@ -11,6 +11,7 @@
 		75699CC6200FB29C00FFC20D /* SnowplowSwiftDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75699CC5200FB29C00FFC20D /* SnowplowSwiftDemoUITests.swift */; };
 		950F89442538503F00AF2291 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950F89432538503F00AF2291 /* Toast.swift */; };
 		950F8995253873F800AF2291 /* AgillicSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */; };
+		951F12DB2576604800AD460E /* TestObjectiveC.m in Sources */ = {isa = PBXBuildFile; fileRef = 951F12DA2576604800AD460E /* TestObjectiveC.m */; };
 		B3D9BDE0237AC0E3009B310A /* SnowplowSwiftDemoWatch WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B3D9BDDF237AC0E3009B310A /* SnowplowSwiftDemoWatch WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3D9BDE6237AC0E3009B310A /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3D9BDE4237AC0E3009B310A /* Interface.storyboard */; };
 		B3D9BDE8237AC0E5009B310A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3D9BDE7237AC0E5009B310A /* Assets.xcassets */; };
@@ -109,6 +110,8 @@
 		75F9C5F421FC004100A5B8FC /* SnowplowTracker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnowplowTracker.framework; path = Carthage/Build/iOS/SnowplowTracker.framework; sourceTree = "<group>"; };
 		75F9C5F621FC004100A5B8FC /* FMDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FMDB.framework; path = Carthage/Build/iOS/FMDB.framework; sourceTree = "<group>"; };
 		950F89432538503F00AF2291 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Toast.swift; path = ../../CommonSwiftCode/Toast.swift; sourceTree = "<group>"; };
+		951F12D92576604800AD460E /* SnowplowSwiftDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SnowplowSwiftDemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		951F12DA2576604800AD460E /* TestObjectiveC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestObjectiveC.m; sourceTree = "<group>"; };
 		9558D1EA24A60DE300791FA6 /* AgillicSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AgillicSDK.framework; path = Carthage/Build/iOS/AgillicSDK.framework; sourceTree = "<group>"; };
 		9598807E2535D1A5005F66B4 /* SnowplowSwiftDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SnowplowSwiftDemo.entitlements; sourceTree = "<group>"; };
 		B3D9BDDC237AC0E3009B310A /* SnowplowSwiftDemoWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SnowplowSwiftDemoWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -210,6 +213,8 @@
 				ED8A3ED923716C9300E51827 /* SnowplowSwiftDemo.entitlements */,
 				ED8A3ED223716C9300E51827 /* SnowplowSwiftDemo.xcdatamodeld */,
 				75699CB1200FB29C00FFC20D /* Info.plist */,
+				951F12DA2576604800AD460E /* TestObjectiveC.m */,
+				951F12D92576604800AD460E /* SnowplowSwiftDemo-Bridging-Header.h */,
 			);
 			path = SnowplowSwiftDemo;
 			sourceTree = "<group>";
@@ -386,7 +391,7 @@
 				TargetAttributes = {
 					75699C9E200FB29C00FFC20D = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1110;
+						LastSwiftMigration = 1220;
 					};
 					75699CB5200FB29C00FFC20D = {
 						CreatedOnToolsVersion = 9.2;
@@ -557,6 +562,7 @@
 				ED8A3EE423716C9300E51827 /* AdditionalViewController.swift in Sources */,
 				ED8A3EE523716C9300E51827 /* AppDelegate.swift in Sources */,
 				ED8A3EDF23716C9300E51827 /* DemoUtils.swift in Sources */,
+				951F12DB2576604800AD460E /* TestObjectiveC.m in Sources */,
 				ED8A3EDD23716C9300E51827 /* SnowplowSwiftDemo.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -782,6 +788,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.agillic.sdk.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SnowplowSwiftDemo/SnowplowSwiftDemo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -818,6 +825,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SnowplowSwiftDemo/SnowplowSwiftDemo-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = Development;
