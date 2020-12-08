@@ -5,6 +5,7 @@
 
 ### Xcode ###
 build/
+.build/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -20,7 +21,9 @@ DerivedData
 *.xcuserstate
 *.gcda
 *.gcno
+Package.resolved
 
+#macos
 .DS_Store
 
 # Vagrant
