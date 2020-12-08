@@ -45,20 +45,23 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, U
             tracker?.pauseTracking()
         }
     }
-    
-    @objc func updateStatus(_ notification: NSNotification) {
-        if let status = notification.userInfo?["status"] as? String? {
-            DispatchQueue.main.async { [unowned self] in
+
+    public func updateStatus(status: String) {
+        DispatchQueue.main.async { [unowned self] in
                     self.statusField.text = status;
-                Toast.show(message: status!, controller: self);
-                }
+                Toast.show(message: status, controller: self);
+        }
+    }
+
+    @objc public func updateStatus(_ notification: NSNotification) {
+        if let status = notification.userInfo?["status"] as? String? {
+            updateStatus(status: status!);
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.recipientField.delegate = self
-        let mainQueue = OperationQueue.main
         //self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
         // Do any additional setup after loading the view, typically from a nib.
         recipientField.text = UserDefaults.standard.string(forKey: keyRecipientField) ?? ""
@@ -66,6 +69,10 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, U
         // NotificationCenter.default.addObserver(self, selector: #selector(self.updateStatus(_:)), name: NSNotification.Name(rawValue: "registration"), object: nil)
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
