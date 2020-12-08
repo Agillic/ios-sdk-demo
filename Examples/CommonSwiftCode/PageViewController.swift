@@ -18,6 +18,7 @@ class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, U
     var methodType : SPRequestOptions = .post
     var protocolType : SPProtocol = .https
     var token : String = ""
+    var demo: DemoViewController?
     @objc dynamic var snowplowId: String! = "iOS/page view"
 
     let kAppId     = "com.agillic.sdk.demo"
@@ -99,7 +100,8 @@ class PageViewController:  UIPageViewController, UIPageViewControllerDelegate, U
     }
 
     lazy var orderedViewControllers: [UIViewController] = {
-        return [self.newVc(viewController: "demo"),
+        demo = self.newVc(viewController: "demo") as? DemoViewController
+        return [demo!,
                 self.newVc(viewController: "metrics"),
                 self.newVc(viewController: "additional")]
     }()
