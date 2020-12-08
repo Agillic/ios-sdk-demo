@@ -47,6 +47,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
     }
     
+    /* Called when a notification is delivered to a foreground app.
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        //Handle the notification
+        //This will get the text sent in your notification
+        
+        let onClick = notification.request.content.userInfo["onClick"] as Any?
+        if let value = onClick as! String? {
+            DispatchQueue.main.async {
+                let pvController = self.window?.rootViewController as! PageViewController
+                Toast.show(message: "Got OnCLick: " + value, controller: pvController.demo!)
+            }
+        }
+        
+
+        //This works for iphone 7 and above using haptic feedback
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.notificationOccurred(.success)
+
+        //This works for all devices. Choose one or the other.
+        // AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate), nil)
+        completionHandler([.alert,.sound])
+    }
+    */
+    
     func buildEventFrom(_ response: UNNotificationResponse, actionIdentifier: String) -> AgillicEvent {
         let request = response.notification.request
         let requestContent = request.content
@@ -87,6 +111,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().delegate = self
         
         return true
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    {
+        guard let aps = userInfo["aps"] as? [String: AnyObject] else {
+            completionHandler(.failed)
+            return
+        }
+        if let pvController = window?.rootViewController as? PageViewController {
+            if let value = userInfo["onClick"] as? String {
+                pvController.demo!.updateStatus(status: "PN with onClick: " + value)
+            } else {
+                if let alert = aps["alert"] as? [String: String?] {
+                    if let title = alert["title"] as? String {
+                        pvController.demo!.updateStatus(status: "PN: " + title)
+                    }
+                }
+            }
+        }
+        completionHandler(UIBackgroundFetchResult.noData)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
