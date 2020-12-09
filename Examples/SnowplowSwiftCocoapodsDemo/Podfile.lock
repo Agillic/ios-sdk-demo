@@ -1,25 +1,34 @@
 PODS:
+  - AgillicSDK (0.1.0):
+    - SnowplowTracker (~> 1.3)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - SnowplowTracker (1.2.2):
+  - SnowplowTracker (1.3.1):
     - FMDB (~> 2.6)
 
 DEPENDENCIES:
-  - SnowplowTracker (from `../../`)
+  - AgillicSDK (from `https://github.com/Agillic/agillic-ios-sdk.git`)
 
 SPEC REPOS:
   trunk:
     - FMDB
+    - SnowplowTracker
 
 EXTERNAL SOURCES:
-  SnowplowTracker:
-    :path: "../../"
+  AgillicSDK:
+    :git: https://github.com/Agillic/agillic-ios-sdk.git
+
+CHECKOUT OPTIONS:
+  AgillicSDK:
+    :commit: c2b68a6ed6bc5c829532299f12f93e73209eadb5
+    :git: https://github.com/Agillic/agillic-ios-sdk.git
 
 SPEC CHECKSUMS:
+  AgillicSDK: 9865c22524bf563519ccb81bcee4def5084b2e66
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  SnowplowTracker: eb0599812d0cfbd3f91f890e478d713b98d69683
+  SnowplowTracker: 71b47ab2ea802f8d4d9c798113e96a8e6e56427a
 
-PODFILE CHECKSUM: f3a4104d16d359e8732a719d55eac06c4e95744e
+PODFILE CHECKSUM: 1fb66d195abc5ae5547d46deb1a637861d7f2346
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3

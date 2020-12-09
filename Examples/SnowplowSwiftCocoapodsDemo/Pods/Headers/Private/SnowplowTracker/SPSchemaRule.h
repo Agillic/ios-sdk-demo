@@ -1,1 +1,0 @@
-../../../../../../Snowplow/GlobalContext/SPSchemaRule.h

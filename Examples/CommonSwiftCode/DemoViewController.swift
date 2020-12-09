@@ -2,42 +2,31 @@
 //  ViewController.swift
 //  SnowplowSwiftDemo
 //
-//  Copyright (c) 2015-2020 Snowplow Analytics Ltd. All rights reserved.
-//
-//  This program is licensed to you under the Apache License Version 2.0,
-//  and you may not use this file except in compliance with the Apache License
-//  Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
-//  http://www.apache.org/licenses/LICENSE-2.0.
-//
-//  Unless required by applicable law or agreed to in writing,
-//  software distributed under the Apache License Version 2.0 is distributed on
-//  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-//  express or implied. See the Apache License Version 2.0 for the specific
-//  language governing permissions and limitations there under.
-//
-//  Authors: Michael Hadam
-//  Copyright: Copyright (c) 2015-2020 Snowplow Analytics Ltd
-//  License: Apache License Version 2.0
+//  Created by Michael Hadam on 1/17/18.
+//  Copyright © 2018 snowplowanalytics. All rights reserved.
 //
 
 import UIKit
 import Foundation
 import CoreData
-import SnowplowTracker
+import AgillicSDK
 
 // Used for all child views
 protocol PageObserver: class {
     func getParentPageViewController(parentRef: PageViewController)
 }
 
-class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
-    private let keyUriField = "URL-Endpoint";
+class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver, UIPickerViewDelegate, UIPickerViewDataSource {
+    private let keyRecipientField = "recipientEmail";
 
-    @IBOutlet weak var uriField: UITextField!
+    @IBOutlet weak var recipientField: UITextField!
     @IBOutlet weak var trackingSwitch: UISegmentedControl!
     @IBOutlet weak var protocolSwitch: UISegmentedControl!
     @IBOutlet weak var methodSwitch: UISegmentedControl!
-    weak var tracker : SPTracker?
+    @IBOutlet weak var pickerView : UIPickerView!;
+    @IBOutlet weak var statusField : UILabel!;
+    weak var tracker : AgillicTracker?
+    var uuid : UUID = UUID.init();
 
     var parentPageViewController: PageViewController!
     @objc dynamic var snowplowId: String! = "demo view"
@@ -46,36 +35,51 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
         parentPageViewController = parentRef
         tracker = parentRef.tracker
     }
-
+    
     @objc func action() {
+        
         let tracking: Bool = (trackingSwitch.selectedSegmentIndex == 0)
-        if (tracking && !(tracker?.getIsTracking() ?? false)) {
-            tracker?.resumeEventTracking()
-        } else if (tracker?.getIsTracking() ?? false) {
-            tracker?.pauseEventTracking()
+        if (tracking && !(tracker?.isTracking() ?? false)) {
+            tracker?.resumeTracking()
+        } else if (tracker?.isTracking() ?? false) {
+            tracker?.pauseTracking()
         }
+    }
+
+    public func updateStatus(status: String) {
+        DispatchQueue.main.async { [unowned self] in
+                    self.statusField.text = status;
+                Toast.show(message: status, controller: self);
+        }
+    }
+
+    @objc public func updateStatus(_ notification: NSNotification) {
+        if let status = notification.userInfo?["status"] as? String? {
+            updateStatus(status: status!);
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.recipientField.delegate = self
+        //self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
+        // Do any additional setup after loading the view, typically from a nib.
+        recipientField.text = UserDefaults.standard.string(forKey: keyRecipientField) ?? ""
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateStatus(_:)), name: NSNotification.Name(rawValue: "registration"), object: nil)
+        // NotificationCenter.default.addObserver(self, selector: #selector(self.updateStatus(_:)), name: NSNotification.Name(rawValue: "registration"), object: nil)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.parentPageViewController.uri = uriField.text!
-        return textField.resignFirstResponder()
+        self.view.endEditing(true)
+        return false
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.uriField.delegate = self
-        self.trackingSwitch.addTarget(self, action: #selector(action), for: .valueChanged)
-        // Do any additional setup after loading the view, typically from a nib.
-        uriField.text = UserDefaults.standard.string(forKey: keyUriField) ?? ""
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
     @IBAction func inputUri(_ sender: UITextField) {
-        self.parentPageViewController.uri = uriField.text!
+        //self.parentPageViewController.userId = recipientField.text!
     }
     
     @IBAction func toggleMethod(_ sender: UISegmentedControl) {
@@ -88,24 +92,37 @@ class DemoViewController: UIViewController, UITextFieldDelegate, PageObserver {
             .http: .https
     }
     
-    @IBAction func trackEvents(_ sender: UIButton) {
-        UserDefaults.standard.set(uriField.text ?? "", forKey: keyUriField);
+    @IBAction func loginAndRegister(_ sender: UIButton) {
+        UserDefaults.standard.set(recipientField.text ?? "", forKey: keyRecipientField);
+        let selected = pickerView.selectedRow(inComponent: 0)
+        let login = self.recipientField.text
         DispatchQueue.global(qos: .default).async {
-            let url = self.parentPageViewController.getCollectorUrl()
-            if url == "" {
-                return
-            }
+            self.parentPageViewController.setup(login: login, selected: selected)
             
-            // Update the tracker
-            self.tracker?.emitter.setUrlEndpoint(url)
-            self.tracker?.emitter.setHttpMethod(self.parentPageViewController.getMethodType())
-            self.tracker?.emitter.setProtocol(self.parentPageViewController.getProtocolType())
-            
-            // Iterate the made counter
-            self.parentPageViewController.madeCounter += 28;
-            
-            // Track all types of events
-            DemoUtils.trackAll(self.parentPageViewController.tracker)
+            let event = AppViewEvent(self.uuid.uuidString, screenName: "ios_protocol://iosapp/demo/1")
+            self.parentPageViewController.tracker?.track(event)
         }
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        let event = AppViewEvent(uuid.uuidString, screenName: "ios_protocol://iosapp/demo/1")
+        parentPageViewController.tracker?.track(event)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return parentPageViewController.keys[row].name;
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return parentPageViewController.keys.count
+    }
+    
+
+
+
+
 }

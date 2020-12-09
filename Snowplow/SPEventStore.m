@@ -28,7 +28,7 @@
 #if SWIFT_PACKAGE
     #import <FMDB.h>
 #else
-    #import <fmdb/FMDB.h>
+    #import <FMDB/FMDB.h>
 #endif
 
 @implementation SPEventStore {

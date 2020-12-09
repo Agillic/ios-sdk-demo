@@ -2,26 +2,13 @@
 //  SecondViewController.swift
 //  SnowplowSwiftDemo
 //
-//  Copyright (c) 2015-2020 Snowplow Analytics Ltd. All rights reserved.
-//
-//  This program is licensed to you under the Apache License Version 2.0,
-//  and you may not use this file except in compliance with the Apache License
-//  Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
-//  http://www.apache.org/licenses/LICENSE-2.0.
-//
-//  Unless required by applicable law or agreed to in writing,
-//  software distributed under the Apache License Version 2.0 is distributed on
-//  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-//  express or implied. See the Apache License Version 2.0 for the specific
-//  language governing permissions and limitations there under.
-//
-//  Authors: Michael Hadam
-//  Copyright: Copyright (c) 2015-2020 Snowplow Analytics Ltd
-//  License: Apache License Version 2.0
+//  Created by Michael Hadam on 3/3/19.
+//  Copyright © 2019 snowplowanalytics. All rights reserved.
 //
 
 import UIKit
-import SnowplowTracker
+import AgillicSDK
+
 
 class MetricsViewController: UIViewController, UITextFieldDelegate, PageObserver {
 
@@ -38,9 +25,9 @@ class MetricsViewController: UIViewController, UITextFieldDelegate, PageObserver
     @IBOutlet weak var sentLabel: UILabel!
     @IBOutlet weak var tokenLabel: UILabel!
     var updateTimer : Timer?
-    weak var tracker : SPTracker?
 
     @objc dynamic var snowplowId: String! = "metrics view"
+    var uuid : UUID = UUID.init();
 
     func updateToken(_ token: String) {
         tokenLabel.text = String(format: "Token: %@", token)
@@ -49,21 +36,25 @@ class MetricsViewController: UIViewController, UITextFieldDelegate, PageObserver
     var parentPageViewController: PageViewController!
     func getParentPageViewController(parentRef: PageViewController) {
         parentPageViewController = parentRef
-        tracker = parentRef.tracker
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.updateTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateMetrics), userInfo: nil, repeats: true)
-        // Do any additional setup after loading the view.
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        let event = AppViewEvent(uuid.uuidString, screenName: "ios_protocol://iosapp/metrics/2")
+        parentPageViewController.tracker?.track(event)
     }
     
     @objc func updateMetrics() {
         madeLabel.text = String(format: "Made: %lld", parentPageViewController.madeCounter)
-        dbCountLabel.text = String(format: "DB Count: %lu", CUnsignedLong(self.tracker?.emitter.getDbCount() ?? 0))
-        sessionCountLabel.text = String(format: "Session Count: %lu", CUnsignedLong(self.tracker?.getSessionIndex() ?? 0))
-        isRunningLabel.text = String(format: "Running: %@", self.tracker?.emitter.getSendingStatus() ?? false ? "yes" : "no")
-        isBackgroundLabel.text = String(format: "Background: %@", self.tracker?.getInBackground() ?? false ? "yes" : "no")
+        let spTracker = parentPageViewController.tracker?.getSPTracker()
+        dbCountLabel.text = String(format: "DB Count: %lu", CUnsignedLong(spTracker?.emitter.getDbCount() ?? 0))
+        sessionCountLabel.text = String(format: "Session Count: %lu", CUnsignedLong(spTracker?.getSessionIndex() ?? 0))
+        isRunningLabel.text = String(format: "Running: %@", spTracker?.emitter.getSendingStatus() ?? false ? "yes" : "no")
+        isBackgroundLabel.text = String(format: "Background: %@", spTracker?.getInBackground() ?? false ? "yes" : "no")
         sentLabel.text = String(format: "Sent: %lu", CUnsignedLong(parentPageViewController.sentCounter))
     }
 

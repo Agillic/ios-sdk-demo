@@ -1,14 +1,9 @@
  
 workspace 'SnowplowSwiftDemo.xcworkspace'
 
+use_frameworks!
+
 target 'SnowplowSwiftDemo' do
-    platform :ios, '9.0'
-    pod 'SnowplowTracker', :path=> '../../'
+    platform :ios, '10.0'
+    pod 'AgillicSDK', :git => 'https://github.com/Agillic/agillic-ios-sdk.git'
 end
-
-target 'SnowplowSwiftWatch Extension' do
-    platform :watchos, '4.0'
-    pod 'SnowplowTracker', :path=> '../../'
-end
-
-

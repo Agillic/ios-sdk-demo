@@ -2,22 +2,8 @@
 //  AppDelegate.swift
 //  SnowplowSwiftDemo
 //
-//  Copyright (c) 2015-2020 Snowplow Analytics Ltd. All rights reserved.
-//
-//  This program is licensed to you under the Apache License Version 2.0,
-//  and you may not use this file except in compliance with the Apache License
-//  Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
-//  http://www.apache.org/licenses/LICENSE-2.0.
-//
-//  Unless required by applicable law or agreed to in writing,
-//  software distributed under the Apache License Version 2.0 is distributed on
-//  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-//  express or implied. See the Apache License Version 2.0 for the specific
-//  language governing permissions and limitations there under.
-//
-//  Authors: Michael Hadam
-//  Copyright: Copyright (c) 2015-2020 Snowplow Analytics Ltd
-//  License: Apache License Version 2.0
+//  Created by Michael Hadam on 1/17/18.
+//  Copyright © 2018 snowplowanalytics. All rights reserved.
 //
 
 import UIKit
@@ -25,6 +11,8 @@ import CoreData
 import Foundation
 import UserNotifications
 import SnowplowTracker
+import AgillicSDK
+
 
 @available(iOS 10.0, *)
 @UIApplicationMain
@@ -37,55 +25,84 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                          withCompletionHandler completionHandler: @escaping () -> Void) {
 
         let actionIdentifier = response.actionIdentifier
-
+        if let rootViewController = window?.rootViewController as? PageViewController {
         switch actionIdentifier {
-        case UNNotificationDismissActionIdentifier: // Notification was dismissed by user
-            // Do something
-            completionHandler()
-        case UNNotificationDefaultActionIdentifier: // App was opened from notification
-            NSLog("Remote notification opened app from background!")
-            if let rootViewController = window?.rootViewController as? PageViewController {
+            case UNNotificationDismissActionIdentifier: // Notification was dismissed by user
+                //
+                rootViewController.tracker?.track(/* PushNotification DISMISS */ AppViewEvent("PushNotificationId", screenName: "DISMISSED"));
+                // Do something
+                completionHandler()
+            case UNNotificationDefaultActionIdentifier: // App was opened from notification
+                NSLog("Remote notification opened app from background!")
+    
+                    NSLog("Notification action identifier: %@", actionIdentifier)
 
-                NSLog("Notification action identifier: %@", actionIdentifier)
-
-                let request = response.notification.request
-                let requestContent = request.content
-                let userInfo = requestContent.userInfo
-                let sound = userInfo["sound"] as? String ?? "unknown"
-
-                let content = SPNotificationContent.build({(builder : SPNotificationContentBuilder?) -> Void in
-                    builder!.setTitle(requestContent.title)
-                    builder!.setSubtitle(requestContent.subtitle)
-                    builder!.setBody(requestContent.body)
-                    builder!.setBadge(requestContent.badge!)
-                    builder!.setSound(sound)
-                    builder!.setLaunchImageName(requestContent.launchImageName)
-                    builder!.setUserInfo(userInfo)
-                    builder!.setAttachments(SPUtilities.convert(request.content.attachments))
-                })
-
-                let formatter = DateFormatter()
-                formatter.dateStyle = .medium
-                formatter.timeStyle = .medium
-                formatter.locale = Locale(identifier: "en_US")
-                let dateString = formatter.string(from: response.notification.date)
-                
-                let event = SPPushNotification.build({(builder : SPPushNotificationBuilder?) -> Void in
-                    builder!.setAction(actionIdentifier)
-                    builder!.setTrigger(SPUtilities.getTriggerType(request.trigger))
-                    builder!.setDeliveryDate(dateString)
-                    builder!.setCategoryIdentifier(requestContent.categoryIdentifier)
-                    builder!.setThreadIdentifier(requestContent.threadIdentifier)
-                    builder!.setNotification(content)
-                })
-                
-                //print(String(data: try! JSONSerialization.data(withJSONObject: event!.getPayload().getAsDictionary(), options: .prettyPrinted), encoding: .utf8 )!)
-                rootViewController.tracker?.trackPushNotificationEvent(event)
+                    let event = buildEventFrom(response, actionIdentifier: actionIdentifier)
+                    //print(String(data: try! JSONSerialization.data(withJSONObject: event!.getPayload().getAsDictionary(), options: .prettyPrinted), encoding: .utf8 )!)
+                    rootViewController.tracker?.track(event)
+                completionHandler()
+            default:
+                completionHandler()
             }
-            completionHandler()
-        default:
-            completionHandler()
         }
+    }
+    
+    /* Called when a notification is delivered to a foreground app.
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        //Handle the notification
+        //This will get the text sent in your notification
+        
+        let onClick = notification.request.content.userInfo["onClick"] as Any?
+        if let value = onClick as! String? {
+            DispatchQueue.main.async {
+                let pvController = self.window?.rootViewController as! PageViewController
+                Toast.show(message: "Got OnCLick: " + value, controller: pvController.demo!)
+            }
+        }
+        
+
+        //This works for iphone 7 and above using haptic feedback
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.notificationOccurred(.success)
+
+        //This works for all devices. Choose one or the other.
+        // AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate), nil)
+        completionHandler([.alert,.sound])
+    }
+    */
+    
+    func buildEventFrom(_ response: UNNotificationResponse, actionIdentifier: String) -> AgillicEvent {
+        let request = response.notification.request
+        let requestContent = request.content
+        let userInfo = requestContent.userInfo
+        let sound = userInfo["sound"] as? String ?? "unknown"
+        let pnContent = SPNotificationContent.build({(builder : SPNotificationContentBuilder?) -> Void in
+            builder!.setTitle(requestContent.title)
+            builder!.setSubtitle(requestContent.subtitle)
+            builder!.setBody(requestContent.body)
+            //builder!.setBadge(requestContent.badge)
+            builder!.setSound(sound)
+            builder!.setLaunchImageName(requestContent.launchImageName)
+            builder!.setUserInfo(userInfo)
+            builder!.setAttachments(SPUtilities.convert(request.content.attachments))
+        })
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        formatter.locale = Locale(identifier: "en_US")
+        let dateString = formatter.string(from: response.notification.date)
+        
+        let _ = SPPushNotification.build({(builder : SPPushNotificationBuilder?) -> Void in
+            builder!.setAction(actionIdentifier)
+            builder!.setTrigger(SPUtilities.getTriggerType(request.trigger))
+            builder!.setDeliveryDate(dateString)
+            builder!.setCategoryIdentifier(requestContent.categoryIdentifier)
+            builder!.setThreadIdentifier(requestContent.threadIdentifier)
+            builder!.setNotification(pnContent)
+        })
+
+        return AppViewEvent("pushNotificationId")
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -94,6 +111,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().delegate = self
         
         return true
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    {
+        guard let aps = userInfo["aps"] as? [String: AnyObject] else {
+            completionHandler(.failed)
+            return
+        }
+        if let pvController = window?.rootViewController as? PageViewController {
+            if let value = userInfo["onClick"] as? String {
+                pvController.demo!.updateStatus(status: "PN with onClick: " + value)
+            } else {
+                if let alert = aps["alert"] as? [String: String?] {
+                    if let title = alert["title"] as? String {
+                        pvController.demo!.updateStatus(status: "PN: " + title)
+                    }
+                }
+            }
+        }
+        completionHandler(UIBackgroundFetchResult.noData)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -122,8 +159,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         if let rootViewController = window?.rootViewController as? PageViewController {
-            let token = String(format: "%@", deviceToken as CVarArg).trimmingCharacters(in: CharacterSet(charactersIn: "<>")).replacingOccurrences(of: " ", with: "")
-            NSLog("%@", token)
+            let tokenComponents = deviceToken.map { data in String(format: "%02.2hhx", data) }
+            let token = tokenComponents.joined()
+            NSLog("DeviceToken %@", token)
             rootViewController.updateToken(token)
         }
     }
