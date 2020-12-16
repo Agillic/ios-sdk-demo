@@ -12,7 +12,7 @@
 
 void agillicTrackingExample() {
     MobileSDK *sdk = [[MobileSDK alloc] init];
-    AgillicTracker *tracker = [sdk registerWithClientAppId:@"aClientAppID" clientAppVersion:@"1.0" solutionId:@"encodedSolutionId" userID:@"dennis.schafroth@agillic.com" pushNotificationToken:nil completionHandler: nil];
+    AgillicTracker *tracker = [sdk registerWithApiKey:@"apiKey" apiSecret:@"apiSecret" clientAppId:@"aClientAppID" clientAppVersion:@"1.0" solutionId:@"encodedSolutionId" userID:@"dennis.schafroth@agillic.com" pushNotificationToken:nil completionHandler: nil];
     // On each application view to track:
     // the AppViewEvent can be created once
     // UUID should be constant for the application over restart, but is not exposed in Agillic Tracking.
